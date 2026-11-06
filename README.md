@@ -1,5 +1,5 @@
 # Digital IC Trainer
-
+https://nikhilsk.xyz/dt
 A browser-based digital IC trainer modelled on a bench trainer panel: breadboard, two IC sockets, 10 logic switches, 10 lamp monitors, four 7-segment digits with 7447 decoders, mono pulser, clock generator (1 Hz to 1 MHz) and power sources. No dependencies and no build step needed to run.
 
 ## Run
