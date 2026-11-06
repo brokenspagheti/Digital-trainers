@@ -1,0 +1,14 @@
+const { Sim } = require('../src/engine.js'); const P = require('../src/presets.js');
+let f = 0; const ok = (c, m) => { if (!c) { f++; console.log('FAIL', m); } };
+const load = (id) => { const p = P.find((x) => x.id === id); const c = { ics: p.ics.map((i, k) => ({ ...i, id: 'i' + k })), wires: p.wires.map(([a, b]) => ({ a, b })) }; return c; };
+const ext = (o = {}) => [['v5', 1], ['gnd', 0], ...Object.entries(o)];
+// strict-power on every preset: ICs must be powered
+for (const p of P) { const c = load(p.id); const s = new Sim(); s.build(c); s.settle(c, ext(), true); ok(s.unpowered.size === 0, p.id + ' power wiring'); ok(s.conflicts === 0, p.id + ' conflicts'); }
+{ const c = load('or-nand'), s = new Sim(); s.build(c); for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) { s.settle(c, ext({ sw1: a, sw2: b }), true); ok(s.net('lamp1') === (a | b), 'or ' + a + b); } }
+{ const c = load('and-nor'), s = new Sim(); s.build(c); for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) { s.settle(c, ext({ sw1: a, sw2: b }), true); ok(s.net('lamp1') === (a & b), 'and ' + a + b); } }
+{ const c = load('half-adder'), s = new Sim(); s.build(c); for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) { s.settle(c, ext({ sw1: a, sw2: b }), true); ok(s.net('lamp1') === (a ^ b) && s.net('lamp2') === (a & b), 'ha ' + a + b); } }
+{ const c = load('adder4'), s = new Sim(); s.build(c); s.settle(c, ext({ sw1: 1, sw2: 0, sw3: 1, sw4: 0, sw5: 1, sw6: 1, sw7: 1, sw8: 0 }), true); ok([1, 2, 3, 4, 5].map((i) => s.net('lamp' + i)).join('') === '00110', 'adder 5+7 ' + [1, 2, 3, 4, 5].map((i) => s.net('lamp' + i)).join('')); }
+{ const c = load('decoder'), s = new Sim(); s.build(c); for (let n = 0; n < 8; n++) { s.settle(c, ext({ sw1: n & 1, sw2: (n >> 1) & 1, sw3: (n >> 2) & 1 }), true); const lamps = [1, 2, 3, 4, 5, 6, 7, 8].map((i) => s.net('lamp' + i)); ok(lamps.every((v, i) => v === (i === n ? 0 : 1)), 'dec ' + n + ' ' + lamps.join('')); } }
+{ const c = load('sr'), s = new Sim(); s.build(c); s.settle(c, ext({ sw1: 1, sw2: 1 }), true); s.settle(c, ext({ sw1: 0, sw2: 1 }), true); s.settle(c, ext({ sw1: 1, sw2: 1 }), true); ok(s.net('lamp1') === 1 && s.net('lamp2') === 0, 'sr set'); s.settle(c, ext({ sw1: 1, sw2: 0 }), true); s.settle(c, ext({ sw1: 1, sw2: 1 }), true); ok(s.net('lamp1') === 0 && s.net('lamp2') === 1, 'sr reset'); }
+{ const c = load('decade'), s = new Sim(); s.build(c); const seq = []; s.settle(c, ext({ ck1: 1 }), true); for (let i = 0; i < 11; i++) { s.settle(c, ext({ ck1: 0 }), true); seq.push([1, 2, 3, 4].reduce((a, k) => a + (s.net('dg1-' + [1, 2, 4, 8][k - 1]) << (k - 1)), 0)); s.settle(c, ext({ ck1: 1 }), true); } ok(seq.join() === '1,2,3,4,5,6,7,8,9,0,1', 'decade ' + seq.join()); }
+console.log(f ? f + ' failed' : 'all preset tests passed'); process.exit(f ? 1 : 0);

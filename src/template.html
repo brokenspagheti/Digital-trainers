@@ -1,0 +1,31 @@
+<title>Digital IC Trainer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+/*CSS*/
+</style>
+<div class="app">
+  <header class="top">
+    <div class="brand"><h1>Digital IC Trainer</h1><p>A working 74-series logic bench. Wire it, power it, and watch the lamps.</p></div>
+    <div class="tools">
+      <button class="btn" id="bPause" type="button" aria-pressed="false">Pause clocks</button>
+      <button class="btn" id="bStep" type="button" disabled>Step 1 Hz edge</button>
+      <button class="btn" id="bRemove" type="button" disabled>Remove selected IC</button>
+      <button class="btn" id="bWires" type="button">Clear wires</button>
+      <button class="btn" id="bClear" type="button">Clear board</button>
+      <label class="check"><input type="checkbox" id="cStrict" checked> Require IC power wiring</label>
+    </div>
+  </header>
+  <div class="status" id="status" role="status"></div>
+  <section class="notes" id="notes" hidden></section>
+  <div class="bench"><div class="panel" id="panel"></div></div>
+  <p class="bench-hint"><span id="meta"></span> · Remove wires from the list below the datasheet. High-speed clocks (1 kHz and up) are shown as a blur, so lamps glow at half brightness.</p>
+  <div class="lower">
+    <section class="card"><h2>IC library</h2><p class="hint">Pick a chip, then click a breadboard column or an empty socket to insert it.</p><div id="library"></div></section>
+    <section class="card sheet"><h2>Datasheet</h2><div id="sheet" class="sheet"></div><h2>Wires</h2><div id="wlist" class="wlist"></div></section>
+    <section class="card"><h2>Experiments</h2><div class="exps" id="exps"></div></section>
+  </div>
+</div>
+<script>
+/*JS*/
+</script>

@@ -1,0 +1,10 @@
+{
+  "name": "digital-ic-trainer",
+  "version": "1.0.0",
+  "description": "Browser-based digital IC trainer with breadboard, 74-series ICs and a logic simulator",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node tests/engine.test.js && node tests/presets.test.js"
+  }
+}
